@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SnapX AI - Multi-Model Assistant</title>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            rel="stylesheet">
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body class="dark-theme">
+        <div class="status-indicator" id="statusIndicator">
+            <i class="fas fa-circle"
+                style="font-size: 8px; margin-right: 6px;"></i>
+            Connected
+        </div>
+
+        <div class="app-container">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="logo"
+                        style="display: flex; justify-content: space-between;">
+                        <div
+                            style="display: flex; align-items: center; gap: 12px;">
+                            <div class="logo-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="logo-text">SnapX AI</div>
+                        </div>
+                        <button class="header-btn close-bt"
+                            onclick="toggleSidebar()" title="Toggle Sidebar">
+                            <i class="fas fa-close"></i>
+                        </button>
+                    </div>
+                    <button class="new-chat-btn" onclick="startNewChat()">
+                        <i class="fas fa-plus"></i>
+                        New Chat
+                    </button>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="model-selector">
+                        <div class="section-title">Model Selection</div>
+                        <select class="model-select" id="modelSelect"
+                            onchange="updateModel()">
+                            <optgroup label="Perplexity Models">
+                                <option value="sonar-pro">Sonar Pro
+                                    (Recommended)</option>
+                                <!-- <option value="sonar">Sonar</option>
+                                <option value="sonar-small-online">Sonar Small
+                                    Online</option>
+                                <option value="sonar-medium-online">Sonar Medium
+                                    Online</option>
+                                <option value="sonar-small-chat">Sonar Small
+                                    Chat</option>
+                                <option value="sonar-medium-chat">Sonar Medium
+                                    Chat</option>
+                                <option value="mistral-7b-instruct">Mistral
+                                    7B</option>
+                                <option value="codellama-34b-instruct">CodeLlama
+                                    34B</option>
+                                <option value="llama-2-70b-chat">Llama 2
+                                    70B</option> -->
+                            </optgroup>
+                            <optgroup label="Google Gemini Models">
+                                <option value="gemini-1.5-flash">Gemini 1.5
+                                    Flash</option>
+                                <!-- <option value="gemini-1.5-pro">Gemini 1.5
+                                    Pro</option>
+                                <option value="gemini-pro">Gemini Pro</option>
+                                <option value="gemini-pro-vision">Gemini Pro
+                                    Vision</option> -->
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="settings-group">
+                        <div class="section-title">Parameters</div>
+
+                        <div class="setting-item">
+                            <span class="setting-label">Temperature</span>
+                            <div class="setting-control">
+                                <div class="slider"
+                                    onclick="updateSlider(this, 'temperature')">
+                                    <div class="slider-thumb"
+                                        style="left: 20%;"></div>
+                                </div>
+                                <span id="temperatureValue"
+                                    style="color: #cbd5e1;">0.2</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <span class="setting-label">Max Tokens</span>
+                            <div class="setting-control">
+                                <div class="slider"
+                                    onclick="updateSlider(this, 'maxTokens')">
+                                    <div class="slider-thumb"
+                                        style="left: 50%;"></div>
+                                </div>
+                                <span id="maxTokensValue"
+                                    style="color: #cbd5e1;">1000</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <span class="setting-label">Citations</span>
+                            <div class="setting-control">
+                                <div class="toggle-switch active"
+                                    onclick="toggleSetting(this, 'citations')">
+                                    <div class="toggle-thumb"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <span class="setting-label">Related Questions</span>
+                            <div class="setting-control">
+                                <div class="toggle-switch active"
+                                    onclick="toggleSetting(this, 'relatedQuestions')">
+                                    <div class="toggle-thumb"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <span class="setting-label">Search Mode</span>
+                            <div class="setting-control">
+                                <div class="toggle-switch active"
+                                    onclick="toggleSetting(this, 'searchMode')">
+                                    <div class="toggle-thumb"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <div class="section-title">Appearance</div>
+
+                        <div class="setting-item">
+                            <span class="setting-label">Dark Theme</span>
+                            <div class="setting-control">
+                                <div class="toggle-switch active"
+                                    onclick="toggleTheme(this)">
+                                    <div class="toggle-thumb"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <header class="chat-header">
+                    <h1 class="chat-title">Multi-Model AI Assistant</h1>
+                    <div class="header-actions">
+                        <button class="header-btn" onclick="toggleSidebar()"
+                            title="Toggle Sidebar">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <button class="header-btn" onclick="exportChat()"
+                            title="Export Chat">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="header-btn" onclick="clearChat()"
+                            title="Clear Chat">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="header-btn" onclick="toggleSettings()"
+                            title="Settings">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Messages will be dynamically added here -->
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-container">
+                        <textarea class="chat-input" id="chatInput"
+                            placeholder="Ask me anything..."
+                            rows="1"></textarea>
+                        <div class="input-actions">
+                            <button class="action-btn voice-btn" id="voiceBtn"
+                                onclick="toggleVoiceRecording()"
+                                title="Voice Input">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button class="action-btn send-btn" id="sendBtn"
+                                onclick="sendMessage()" title="Send Message">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <script src="./index.js"></script>
+    </body>
+</html>
